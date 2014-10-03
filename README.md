@@ -55,7 +55,7 @@ Spreadsheet.Create(@"C:\temp\songs.xlsx",
 	});
 ```
 
-Using Dictionary
+Using a dictionary:
 ```c#
 var songs =
 	new List<IDictionary<string, object>>
@@ -90,7 +90,7 @@ Spreadsheet.Create(@"C:\temp\songs_dict.xlsx",
 	});
 ```
 
-Multiple Sheets:
+Creating multiple sheets:
 ```c#
 Spreadsheet.Create(@"C:\temp\songs_multi.xlsx",
 	new List<SheetDefinition<Song>>
