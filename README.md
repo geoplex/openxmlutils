@@ -20,7 +20,7 @@ http://www.codeproject.com/Articles/97307/Using-C-and-Open-XML-SDK-for-Microsoft
 
 ##Example Usage
 
-Using objects:
+Using a list of objects:
 ```c#
 var songs =
 new List<Song>
@@ -55,7 +55,7 @@ Spreadsheet.Create(@"C:\temp\songs.xlsx",
 	});
 ```
 
-Using a dictionary:
+Using a list of dictionaries:
 ```c#
 var songs =
 	new List<IDictionary<string, object>>
