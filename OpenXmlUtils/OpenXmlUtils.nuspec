@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/geoplex/openxmlutils</projectUrl>
+    <description>$description$</description>
+    <copyright>Copyright 2014</copyright>
+    <tags>OpenXml DocumentFormat Spreadsheet</tags>
+  </metadata>
+</package>
