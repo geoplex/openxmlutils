@@ -45,7 +45,8 @@ namespace OpenXmlUtils
             TitleText,
             SubtitleText,
             Duration,
-            TotalsDuration
+            TotalsDuration,
+            Hyperlink
         }
 
         public CustomStylesheet()
@@ -250,6 +251,16 @@ namespace OpenXmlUtils
             };
             cfs.AppendChild(cf);
 
+            // CustomCellFormats.Hyperlink
+            cf = new CellFormat();
+            cf.NumberFormatId = 0;
+            cf.FontId = 4;
+            cf.FillId = 0;
+            cf.BorderId = 0;
+            cf.FormatId = 0;
+            cf.ApplyNumberFormat = BooleanValue.FromBoolean(false);
+            cfs.AppendChild(cf);
+
             cfs.Count = UInt32Value.FromUInt32((uint) cfs.ChildElements.Count);
             return cfs;
         }
@@ -414,6 +425,16 @@ namespace OpenXmlUtils
             ft = new Font();
             ftn = new FontName { Val = StringValue.FromString("Arial") };
             ftsz = new FontSize { Val = DoubleValue.FromDouble(14) };
+            ft.FontName = ftn;
+            ft.FontSize = ftsz;
+            fts.AppendChild(ft);
+
+            // font 4
+            ft = new Font();
+            ftn = new FontName { Val = StringValue.FromString("Arial") };
+            ftsz = new FontSize { Val = DoubleValue.FromDouble(11) };
+            var fontColor = Color.MediumBlue;
+            ft.Color = new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = HexBinaryValueFromColor(fontColor) };
             ft.FontName = ftn;
             ft.FontSize = ftsz;
             fts.AppendChild(ft);

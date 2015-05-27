@@ -267,8 +267,6 @@ namespace OpenXmlUtils
         private static void CreateTable<T>(IList<T> objects, ref int rowIndex, int numCols,
             List<SpreadsheetField> fields, List<char> headers, SheetData sheetData)
         {
-            var fieldNames = fields.Select(f => f.FieldName).ToList();
-
             // for each object
             foreach (var rowObj in objects)
             {
@@ -281,62 +279,84 @@ namespace OpenXmlUtils
                 // populate columns using supplied objects
                 for (col = 0; col < numCols; col++)
                 {
-                    var columnObj = GetColumnObject(fieldNames[col], rowObj);
+                    var field = fields[col];
+                    var columnObj = GetColumnObject(field.FieldName, rowObj);
                     if (columnObj == null || columnObj == DBNull.Value) continue;
 
-                    if (columnObj is string)
+                    Cell cell;
+
+                    if (field.GetType() == typeof (HyperlinkField))
                     {
-                        var c = new TextCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
-                        r.AppendChild(c);
-                    }
-                    else if (columnObj is bool)
-                    {
-                        var value = (bool) columnObj ? "Yes" : "No";
-                        var c = new TextCell(headers[col].ToString(), value, rowIndex);
-                        r.AppendChild(c);
-                    }
-                    else if (columnObj is DateTime)
-                    {
-                        var c = new DateCell(headers[col].ToString(), (DateTime) columnObj, rowIndex);
-                        r.AppendChild(c);
-                    }
-                    else if (columnObj is TimeSpan)
-                    {
-                        var ts = (TimeSpan) columnObj;
-                        // excel stores time as "fraction of hours in a day"
-                        var c = new NumberCell(headers[col].ToString(), (ts.TotalHours / 24).ToString(), rowIndex)
-                        {
-                            StyleIndex = (UInt32)CustomStylesheet.CustomCellFormats.Duration
-                        };
-                        r.AppendChild(c);
-                    }
-                    else if (columnObj is decimal || columnObj is double)
-                    {
-                        var c = new NumberCell(headers[col].ToString(), columnObj.ToString(), rowIndex)
-                        {
-                            StyleIndex = (UInt32) CustomStylesheet.CustomCellFormats.DefaultNumber2DecimalPlace
-                        };
-                        r.AppendChild(c);
+                        var displayColumnObj = GetColumnObject(((HyperlinkField)field).DisplayFieldName, rowObj);
+                        cell = CreateHyperlinkCell<T>(rowIndex, headers, columnObj, displayColumnObj, col);
                     }
                     else
                     {
-                        long value;
-                        if (long.TryParse(columnObj.ToString(), out value))
-                        {
-                            var c = new NumberCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
-                            r.AppendChild(c);
-                        }
-                        else
-                        {
-                            var c = new TextCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
-
-                            r.AppendChild(c);
-                        }
+                        cell = CreateCell<T>(rowIndex, headers, columnObj, col);
                     }
+
+                    r.AppendChild(cell);
+
                 } // for each column
 
                 sheetData.AppendChild(r);
             }
+        }
+
+        private static Cell CreateHyperlinkCell<T>(int rowIndex, List<char> headers, object columnObj, object displayColumnObj, int col)
+        {
+            return new FormulaCell(headers[col].ToString(),
+                String.Format(@"HYPERLINK(""{0}"", ""{1}"")", columnObj, displayColumnObj), rowIndex)
+            {
+                StyleIndex = (UInt32) CustomStylesheet.CustomCellFormats.Hyperlink
+            };
+        }
+
+        private static Cell CreateCell<T>(int rowIndex, List<char> headers, object columnObj, int col)
+        {
+            Cell cell;
+            if (columnObj is string)
+            {
+                cell = new TextCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
+            }
+            else if (columnObj is bool)
+            {
+                var value = (bool) columnObj ? "Yes" : "No";
+                cell = new TextCell(headers[col].ToString(), value, rowIndex);
+            }
+            else if (columnObj is DateTime)
+            {
+                cell = new DateCell(headers[col].ToString(), (DateTime) columnObj, rowIndex);
+            }
+            else if (columnObj is TimeSpan)
+            {
+                var ts = (TimeSpan) columnObj;
+                // excel stores time as "fraction of hours in a day"
+                cell = new NumberCell(headers[col].ToString(), (ts.TotalHours/24).ToString(), rowIndex)
+                {
+                    StyleIndex = (UInt32) CustomStylesheet.CustomCellFormats.Duration
+                };
+            }
+            else if (columnObj is decimal || columnObj is double)
+            {
+                cell = new NumberCell(headers[col].ToString(), columnObj.ToString(), rowIndex)
+                {
+                    StyleIndex = (UInt32) CustomStylesheet.CustomCellFormats.DefaultNumber2DecimalPlace
+                };
+            }
+            else
+            {
+                long value;
+                if (long.TryParse(columnObj.ToString(), out value))
+                {
+                    cell = new NumberCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
+                }
+                else
+                {
+                    cell = new TextCell(headers[col].ToString(), columnObj.ToString(), rowIndex);
+                }
+            }
+            return cell;
         }
 
         private static object GetColumnObject<T>(string fieldName, T rowObj)

@@ -35,6 +35,8 @@ namespace OpenXmlUtils.Tests
         public bool Bool { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan TimeSpan { get; set; }
+        public string Url { get; set; }
+        public string Hyperlink { get; set; }
     }
 
     [TestClass]
@@ -51,7 +53,7 @@ namespace OpenXmlUtils.Tests
                           new Song { Artist = "The Horrors", Title = "Still Life", Date = DateTime.Today - TimeSpan.FromDays(1), TimeSpan = TimeSpan.FromSeconds(22345), Int = 9497934L, Double = 33.4634444, Bool = true },
                           new Song { Artist = "Todd Terje", Title = "Inspector Norse", Date = DateTime.Today - TimeSpan.FromDays(356), TimeSpan = TimeSpan.FromSeconds(5565), Int = 34211343L, Double = 54.44444, Bool = false },
                           new Song { Artist = "Alpine", Title = "Hands", Date = DateTime.Today - TimeSpan.FromDays(5.5), TimeSpan = TimeSpan.FromSeconds(9907), Int = 32323333L, Double = 3445.44, Bool = false },
-                          new Song { Artist = "Parquet Courts", Title = "Ducking and Dodging", Date = DateTime.Today - TimeSpan.FromDays(88.55), TimeSpan = TimeSpan.FromSeconds(8877), Int = 8088872L, Double = 44.0, Bool = false },        
+                          new Song { Artist = "Parquet Courts", Title = "Ducking and Dodging", Date = DateTime.Today - TimeSpan.FromDays(88.55), TimeSpan = TimeSpan.FromSeconds(8877), Int = 8088872L, Double = 44.0, Bool = false, Url = "https://parquetcourts.wordpress.com", Hyperlink = "parquetcourts.wordpress.com"}, 
                         };
 
             var fields = new List<SpreadsheetField>
@@ -62,7 +64,8 @@ namespace OpenXmlUtils.Tests
                 new SpreadsheetField{ Title = "RandomTimeSpan", FieldName = "TimeSpan"},
                 new SpreadsheetField{ Title = "RandomInt", FieldName = "Int"},
                 new SpreadsheetField{ Title = "RandomDouble", FieldName = "Double"},
-                new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"}
+                new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"},
+                new HyperlinkField{ Title = "Website", FieldName = "Url", DisplayFieldName = "Hyperlink"}
             };
 
             Spreadsheet.Create(@"C:\temp\songs.xlsx",
@@ -88,7 +91,7 @@ namespace OpenXmlUtils.Tests
                 new Dictionary<string, object> { { "Artist" , "The Horrors"}, {"Title" , "Still Life"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(1123)}, {"Int", 9497934L},{ "Double" , 33.4634444}, {"Bool" , true }},
                 new Dictionary<string, object> { { "Artist" , "Todd Terje"}, {"Title" , "Inspector Norse"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(9973)}, {"Int", 34211343L},{ "Double" , 54.44444}, {"Bool" , false }},
                 new Dictionary<string, object> { { "Artist" , "Alpine"}, {"Title" , "Hands"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3841)}, {"Int", 32323333L},{ "Double" , 3445.44}, {"Bool" , false }},
-                new Dictionary<string, object> { { "Artist" , "Parquet Courts"}, {"Title" , "Ducking and Dodging"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(9973)}, {"Int", 8088872L},{ "Double" , 44.0}, {"Bool" , false }}        
+                new Dictionary<string, object> { { "Artist" , "Parquet Courts"}, {"Title" , "Ducking and Dodging"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(9973)}, {"Int", 8088872L},{ "Double" , 44.0}, {"Bool" , false }, {"Url", "https://parquetcourts.wordpress.com"}, {"Hyperlink", "parquetcourts.wordpress.com"}}   
             };
 
             var fields = new List<SpreadsheetField>
@@ -99,7 +102,8 @@ namespace OpenXmlUtils.Tests
                 new SpreadsheetField{ Title = "RandomTimeSpan", FieldName = "TimeSpan"},
                 new SpreadsheetField{ Title = "RandomInt", FieldName = "Int"},
                 new SpreadsheetField{ Title = "RandomDouble", FieldName = "Double"},
-                new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"}
+                new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"},
+                new HyperlinkField{ Title = "Website", FieldName = "Url", DisplayFieldName = "Hyperlink"}
             };
 
             Spreadsheet.Create(@"C:\temp\songs_dict.xlsx",
