@@ -58,7 +58,7 @@ Spreadsheet.Create(@"C:\temp\songs.xlsx",
 Using a list of dictionaries:
 ```c#
 var songs =
-	new List<IDictionary<string, object>>
+	new List<object>
 {
 	new Dictionary<string, object> { { "Artist" , "Joy Devision"}, {"Title" , "Disorder"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
 	new Dictionary<string, object> { { "Artist" , "Moderate"}, {"Title" , "A New Error"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(34345)}, {"Int", 89563312L},{ "Double" , 5.6}, {"Bool" , true }},
@@ -81,7 +81,7 @@ var fields = new List<SpreadsheetField>
 };
 
 Spreadsheet.Create(@"C:\temp\songs_dict.xlsx",
-	new SheetDefinition<IDictionary<string, object>>
+	new SheetDefinition<object>
 	{
 		Fields = fields,
 		Name = "Songs",
@@ -110,4 +110,75 @@ Spreadsheet.Create(@"C:\temp\songs_multi.xlsx",
 			Objects = songs2
 		}
 	});
+```
+
+Hyperlinks:
+```
+var songs =
+    new List<Song>
+        { 
+            new Song { Artist = "Parquet Courts", Title = "Ducking and Dodging", Url = "https://parquetcourts.wordpress.com", Hyperlink = "parquetcourts.wordpress.com"}, 
+        };
+
+var fields = new List<SpreadsheetField>
+{
+    new SpreadsheetField{ Title = "Artist", FieldName = "Artist"},
+    new SpreadsheetField{ Title = "Title", FieldName = "Title"},
+    new HyperlinkField{ Title = "Website", FieldName = "Url", DisplayFieldName = "Hyperlink"}
+};
+
+Spreadsheet.Create(@"C:\temp\songs_hyperlinks.xlsx",
+    new SheetDefinition<Song>
+    {
+        Fields = fields,
+        Name = "Songs",
+        SubTitle = DateTime.Today.ToLongDateString(),
+        IncludeTotalsRow = true,
+        Objects = songs
+    });
+```
+
+Row Grouping:
+```c#
+var songs =
+    new List<object>
+{
+    new Dictionary<string, object> { { "Artist" , "Joy Devision"} },
+    new List<object> {
+            new Dictionary<string, object> { { "Albumn" , "Closer"} },
+            new List<object> {
+                new Dictionary<string, object>{ {"Title" , "Isolation"} },
+                new Dictionary<string, object>{ {"Title" , "Colony"} },
+                new Dictionary<string, object>{ {"Title" , "Decades"} },
+            },
+            new Dictionary<string, object> { { "Albumn" , "Unknown Pleasures"} },
+            new List<object> {
+                new Dictionary<string, object>{ {"Title" , "Disorder"} },
+                new Dictionary<string, object>{ {"Title" , "Candidate"} },
+                new Dictionary<string, object>{ {"Title" , "She's Lost Control"} }
+            },
+        },
+    new Dictionary<string, object> { { "Artist" , "Moderate"} },
+    new List<object> {
+            new Dictionary<string, object>{ {"Title" , "A New Error"} },
+            new Dictionary<string, object>{ {"Title" , "Rusty Nails"} },
+            new Dictionary<string, object>{ {"Title" , "Seamonkey"} },
+        },
+};
+
+var fields = new List<SpreadsheetField>
+{
+    new SpreadsheetField{ Title = "Artist", FieldName = "Artist"},
+    new SpreadsheetField{ Title = "Albumn", FieldName = "Albumn"},
+    new SpreadsheetField{ Title = "Title", FieldName = "Title"},
+};
+
+Spreadsheet.Create(@"C:\temp\songs_row_grouping.xlsx",
+    new SheetDefinition<object>
+    {
+        Fields = fields,
+        Name = "Songs",
+        IncludeTotalsRow = false,
+        Objects = songs
+    });
 ```
