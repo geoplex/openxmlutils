@@ -83,7 +83,7 @@ namespace OpenXmlUtils.Tests
         public void TestDictionariesToSpreadsheet()
         {
             var songs =
-                new List<IDictionary<string, object>>
+                new List<object>
             {
                 new Dictionary<string, object> { { "Artist" , "Joy Devision"}, {"Title" , "Disorder"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
                 new Dictionary<string, object> { { "Artist" , "Moderate"}, {"Title" , "A New Error"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(34345)}, {"Int", 89563312L},{ "Double" , 5.6}, {"Bool" , true }},
@@ -107,7 +107,7 @@ namespace OpenXmlUtils.Tests
             };
 
             Spreadsheet.Create(@"C:\temp\songs_dict.xlsx",
-                new SheetDefinition<IDictionary<string, object>>
+                new SheetDefinition<object>
                 {
                     Fields = fields,
                     Name = "Songs",
@@ -162,6 +162,57 @@ namespace OpenXmlUtils.Tests
                         IncludeTotalsRow = true,
                         Objects = songs2
                     }
+                });
+        }
+
+        [TestMethod]
+        public void TestRowGrouping()
+        {
+            var songs =
+                new List<object>
+            {
+                new Dictionary<string, object> { { "Artist" , "Joy Devision"} },
+                new List<object> {
+                        new Dictionary<string, object> { { "Albumn" , "Closer"} },
+                        new List<object> {
+                            new Dictionary<string, object>{ {"Title" , "Isolation"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                            new Dictionary<string, object>{ {"Title" , "Colony"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                            new Dictionary<string, object>{ {"Title" , "Decades"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                        },
+                        new Dictionary<string, object> { { "Albumn" , "Unknown Pleasures"} },
+                        new List<object> {
+                            new Dictionary<string, object>{ {"Title" , "Disorder"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                            new Dictionary<string, object>{ {"Title" , "Candidate"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                            new Dictionary<string, object>{ {"Title" , "She's Lost Control"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }}
+                        },
+                    },
+                new Dictionary<string, object> { { "Artist" , "Moderate"} },
+                new List<object> {
+                        new Dictionary<string, object>{ {"Title" , "A New Error"}, {"Albumn" , "Moderat"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                        new Dictionary<string, object>{ {"Title" , "Rusty Nails"}, {"Albumn" , "Moderat"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                        new Dictionary<string, object>{ {"Title" , "Seamonkey"}, {"Albumn" , "Moderat"}, {"Date" , DateTime.Today}, {"TimeSpan" , TimeSpan.FromSeconds(3343)}, {"Int" ,89453312L},{ "Double" , 4043.4545}, {"Bool" , false }},
+                    },
+            };
+
+            var fields = new List<SpreadsheetField>
+            {
+                new SpreadsheetField{ Title = "Artist", FieldName = "Artist"},
+                new SpreadsheetField{ Title = "Albumn", FieldName = "Albumn"},
+                new SpreadsheetField{ Title = "Title", FieldName = "Title"},
+                new SpreadsheetField{ Title = "RandomDate", FieldName = "Date"},
+                new SpreadsheetField{ Title = "RandomTimeSpan", FieldName = "TimeSpan"},
+                new SpreadsheetField{ Title = "RandomInt", FieldName = "Int"},
+                new SpreadsheetField{ Title = "RandomDouble", FieldName = "Double"},
+                new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"},
+            };
+
+            Spreadsheet.Create(@"C:\temp\songs_row_grouping.xlsx",
+                new SheetDefinition<object>
+                {
+                    Fields = fields,
+                    Name = "Songs",
+                    IncludeTotalsRow = false,
+                    Objects = songs
                 });
         }
     }

@@ -265,15 +265,29 @@ namespace OpenXmlUtils
         }
 
         private static void CreateTable<T>(IList<T> objects, ref int rowIndex, int numCols,
-            List<SpreadsheetField> fields, List<char> headers, SheetData sheetData)
+            List<SpreadsheetField> fields, List<char> headers, SheetData sheetData, bool hidden=false, int outline=0)
         {
             // for each object
             foreach (var rowObj in objects)
             {
+                // row group?
+                if (IsList(rowObj))
+                {
+                    CreateTable((IList<object>)rowObj, ref rowIndex, numCols, fields, headers, sheetData, true, outline+1);
+                    continue;
+                }
+
                 rowIndex++;
 
                 // create a row
-                var r = new Row {RowIndex = (uint) rowIndex};
+                var row = new Row
+                {
+                    RowIndex = (uint)rowIndex,
+                    Collapsed = new BooleanValue(false),
+                    OutlineLevel = new ByteValue((byte)outline),
+                    Hidden = new BooleanValue(hidden)
+                };
+
                 int col;
 
                 // populate columns using supplied objects
@@ -295,11 +309,11 @@ namespace OpenXmlUtils
                         cell = CreateCell<T>(rowIndex, headers, columnObj, col);
                     }
 
-                    r.AppendChild(cell);
+                    row.AppendChild(cell);
 
                 } // for each column
 
-                sheetData.AppendChild(r);
+                sheetData.AppendChild(row);
             }
         }
 
@@ -490,9 +504,9 @@ namespace OpenXmlUtils
             return column;
         }
 
-        private static bool IsStringObjectDictionary(object dict)
+        private static bool IsStringObjectDictionary(object obj)
         {
-            var t = dict.GetType();
+            var t = obj.GetType();
             var isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
             if (!isDict)
                 return false;
@@ -501,6 +515,13 @@ namespace OpenXmlUtils
             var valueType = t.GetGenericArguments()[1];
             return keyType == typeof (String) &&
                    valueType == typeof (Object);
+        }
+
+        private static bool IsList(object obj)
+        {
+            var t = obj.GetType();
+            var isList = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>);
+            return isList;
         }
     }
 }
