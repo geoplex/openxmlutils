@@ -58,7 +58,7 @@ namespace OpenXmlUtils
 
                 // add work sheet
                 var sheets = new Sheets();
-                sheets.AppendChild(CreateSheet(def, workbookPart));
+                sheets.AppendChild(CreateSheet(1, def, workbookPart));
                 workbook.AppendChild(sheets);
 
                 // add workbook to workbook part
@@ -95,9 +95,10 @@ namespace OpenXmlUtils
 
                 // add work sheets
                 var sheets = new Sheets();
-                foreach (var def in defs)
+                var list = defs.ToList();
+                for (var i = 0; i < list.Count(); i++)
                 {
-                    sheets.AppendChild(CreateSheet(def, workbookPart));
+                    sheets.AppendChild(CreateSheet(i+1, list[i], workbookPart));
                 }
                 workbook.AppendChild(sheets);
 
@@ -108,7 +109,7 @@ namespace OpenXmlUtils
             }
         }
 
-        private static Sheet CreateSheet<T>(SheetDefinition<T> def, WorkbookPart workbookPart)
+        private static Sheet CreateSheet<T>(int sheetIndex, SheetDefinition<T> def, WorkbookPart workbookPart)
         {
             // create worksheet part
             var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
@@ -154,7 +155,7 @@ namespace OpenXmlUtils
             worksheetPart.Worksheet = worksheet;
             worksheetPart.Worksheet.Save();
 
-            return new Sheet {Name = def.Name, SheetId = 1, Id = worksheetId};
+            return new Sheet { Name = def.Name, SheetId = (UInt32)sheetIndex, Id = worksheetId };
         }
 
         private static double ColumnWidth(SheetData sheetData, int col, int titleRowCount)
