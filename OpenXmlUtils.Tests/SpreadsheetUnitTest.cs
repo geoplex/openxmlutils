@@ -35,6 +35,7 @@ namespace OpenXmlUtils.Tests
         public bool Bool { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan TimeSpan { get; set; }
+        public double Decimal { get; set; }
         public string Url { get; set; }
         public string Hyperlink { get; set; }
     }
@@ -52,7 +53,7 @@ namespace OpenXmlUtils.Tests
                           new Song { Artist = "Massive Attack", Title = "Paradise Circus", Date = DateTime.Today + TimeSpan.FromDays(53), TimeSpan = TimeSpan.FromSeconds(545), Int = 344334L, Double = 222.3, Bool = false },
                           new Song { Artist = "The Horrors", Title = "Still Life", Date = DateTime.Today - TimeSpan.FromDays(1), TimeSpan = TimeSpan.FromSeconds(22345), Int = 9497934L, Double = 33.4634444, Bool = true },
                           new Song { Artist = "Todd Terje", Title = "Inspector Norse", Date = DateTime.Today - TimeSpan.FromDays(356), TimeSpan = TimeSpan.FromSeconds(5565), Int = 34211343L, Double = 54.44444, Bool = false },
-                          new Song { Artist = "Alpine", Title = "Hands", Date = DateTime.Today - TimeSpan.FromDays(5.5), TimeSpan = TimeSpan.FromSeconds(9907), Int = 32323333L, Double = 3445.44, Bool = false },
+                          new Song { Artist = "Alpine", Title = "Hands", Date = DateTime.Today - TimeSpan.FromDays(5.5), TimeSpan = TimeSpan.FromSeconds(9907), Int = 32323333L, Double = 3445.44, Bool = false , Decimal = 023.0032334},
                           new Song { Artist = "Parquet Courts", Title = "Ducking and Dodging", Date = DateTime.Today - TimeSpan.FromDays(88.55), TimeSpan = TimeSpan.FromSeconds(8877), Int = 8088872L, Double = 44.0, Bool = false, Url = "https://parquetcourts.wordpress.com", Hyperlink = "parquetcourts.wordpress.com"}, 
                         };
 
@@ -65,6 +66,7 @@ namespace OpenXmlUtils.Tests
                 new SpreadsheetField{ Title = "RandomInt", FieldName = "Int"},
                 new SpreadsheetField{ Title = "RandomDouble", FieldName = "Double"},
                 new SpreadsheetField{ Title = "RandomBool", FieldName = "Bool"},
+                new DecimalNumberField{ Title = "RandomDecimal", FieldName = "Decimal", DecimalPlaces = 5},
                 new HyperlinkField{ Title = "Website", FieldName = "Url", DisplayFieldName = "Hyperlink"}
             };
 

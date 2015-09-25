@@ -305,6 +305,10 @@ namespace OpenXmlUtils
                         var displayColumnObj = GetColumnObject(((HyperlinkField)field).DisplayFieldName, rowObj);
                         cell = CreateHyperlinkCell<T>(rowIndex, headers, columnObj, displayColumnObj, col);
                     }
+                    else if (field.GetType() == typeof(DecimalNumberField))
+                    {
+                        cell = CreateDecimalNumberCell<T>(rowIndex, headers, columnObj, ((DecimalNumberField)field).DecimalPlaces, col);
+                    }
                     else
                     {
                         cell = CreateCell<T>(rowIndex, headers, columnObj, col);
@@ -324,6 +328,15 @@ namespace OpenXmlUtils
                 String.Format(@"HYPERLINK(""{0}"", ""{1}"")", columnObj, displayColumnObj), rowIndex)
             {
                 StyleIndex = (UInt32) CustomStylesheet.CustomCellFormats.Hyperlink
+            };
+        }
+
+        private static Cell CreateDecimalNumberCell<T>(int rowIndex, List<char> headers, object columnObj, int decimalPlaces, int col)
+        {
+            // TODO: decimal places other than 5
+            return new NumberCell(headers[col].ToString(), columnObj.ToString(), rowIndex)
+            {
+                StyleIndex = (UInt32)CustomStylesheet.CustomCellFormats.DefaultNumber5DecimalPlace
             };
         }
 

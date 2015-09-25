@@ -36,7 +36,7 @@ namespace OpenXmlUtils
             DefaultText = 0,
             DefaultDate,
             DefaultNumber2DecimalPlace,
-            DefaultNumber4DecimalPlace,
+            DefaultNumber5DecimalPlace,
             DefaultDateTime,
             HeaderText,
             TotalsNumber,
@@ -52,16 +52,16 @@ namespace OpenXmlUtils
         public CustomStylesheet()
         {
             NumberingFormat nfDateTime;
-            NumberingFormat nf4Decimal;
+            NumberingFormat nf5Decimal;
             NumberingFormat nfDuration;
             NumberingFormat nfTotalDuration;
 
-            Append(CreateNumberingFormats(out nfDateTime, out nf4Decimal, out nfDuration, out nfTotalDuration));
+            Append(CreateNumberingFormats(out nfDateTime, out nf5Decimal, out nfDuration, out nfTotalDuration));
             Append(CreateFonts());
             Append(CreateFills());
             Append(CreateBorders());
             Append(CreateCellStyleFormats());
-            Append(CreateCellFormats(nfDateTime, nf4Decimal, nfDuration, nfTotalDuration));
+            Append(CreateCellFormats(nfDateTime, nf5Decimal, nfDuration, nfTotalDuration));
             Append(CreateCellStyles());
             Append(CreateDifferentialFormats());
             Append(CreateTableStyles());
@@ -100,7 +100,7 @@ namespace OpenXmlUtils
         /// <summary>
         /// Ensure cell formats are added in the order specified by the enumeration
         /// </summary>
-        private static CellFormats CreateCellFormats(NumberingFormat nfDateTime, NumberingFormat nf4Decimal,
+        private static CellFormats CreateCellFormats(NumberingFormat nfDateTime, NumberingFormat nf5Decimal,
             NumberingFormat nfDuration, NumberingFormat nfTotalDuration)
         {
             var cfs = new CellFormats();
@@ -135,9 +135,9 @@ namespace OpenXmlUtils
             cf.ApplyNumberFormat = BooleanValue.FromBoolean(true);
             cfs.AppendChild(cf);
 
-            // CustomCellFormats.DefaultNumber4DecimalPlace
+            // CustomCellFormats.DefaultNumber5DecimalPlace
             cf = new CellFormat();
-            cf.NumberFormatId = nf4Decimal.NumberFormatId;
+            cf.NumberFormatId = nf5Decimal.NumberFormatId;
             cf.FontId = 0;
             cf.FillId = 0;
             cf.BorderId = 0;
@@ -266,7 +266,7 @@ namespace OpenXmlUtils
         }
 
         private static NumberingFormats CreateNumberingFormats(out NumberingFormat nfDateTime,
-            out NumberingFormat nf4Decimal, out NumberingFormat nfDuration, out NumberingFormat nfTotalDuration)
+            out NumberingFormat nf5Decimal, out NumberingFormat nfDuration, out NumberingFormat nfTotalDuration)
         {
             // built-in formats go up to 164
             uint iExcelIndex = 164;
@@ -277,10 +277,10 @@ namespace OpenXmlUtils
             nfDateTime.FormatCode = StringValue.FromString("dd/mm/yyyy hh:mm:ss");
             nfs.AppendChild(nfDateTime);
 
-            nf4Decimal = new NumberingFormat();
-            nf4Decimal.NumberFormatId = UInt32Value.FromUInt32(iExcelIndex++);
-            nf4Decimal.FormatCode = StringValue.FromString("#,##0.0000");
-            nfs.AppendChild(nf4Decimal);
+            nf5Decimal = new NumberingFormat();
+            nf5Decimal.NumberFormatId = UInt32Value.FromUInt32(iExcelIndex++);
+            nf5Decimal.FormatCode = StringValue.FromString("#,##0.00000");
+            nfs.AppendChild(nf5Decimal);
 
             nfDuration = new NumberingFormat();
             nfDuration.NumberFormatId = UInt32Value.FromUInt32(iExcelIndex++);

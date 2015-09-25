@@ -114,6 +114,7 @@
     <Compile Include="Spreadsheet.cs" />
     <Compile Include="FormulaCell.cs" />
     <Compile Include="NumberCell.cs" />
+    <Compile Include="SpreadsheetField Types\DecimalNumberField.cs" />
     <Compile Include="SpreadsheetField Types\HyperlinkField.cs" />
     <Compile Include="SpreadsheetField.cs" />
     <Compile Include="TextCell.cs" />
