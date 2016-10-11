@@ -272,9 +272,10 @@ namespace OpenXmlUtils
             foreach (var rowObj in objects)
             {
                 // row group?
-                if (IsList(rowObj))
+                var list = rowObj as IList<object>;
+                if (list != null)
                 {
-                    CreateTable((IList<object>)rowObj, ref rowIndex, numCols, fields, headers, sheetData, true, outline+1);
+                    CreateTable(list, ref rowIndex, numCols, fields, headers, sheetData, true, outline+1);
                     continue;
                 }
 
@@ -390,10 +391,11 @@ namespace OpenXmlUtils
         private static object GetColumnObject<T>(string fieldName, T rowObj)
         {
             // is the object a dictionary?
-            if (IsStringObjectDictionary(rowObj))
+            var dict = rowObj as IDictionary<string, object>;
+            if (dict != null)
             {
-                var dict = (IDictionary<string, object>) rowObj;
-                return !dict.ContainsKey(fieldName) ? null : dict[fieldName];
+                object value;
+                return dict.TryGetValue(fieldName, out value) ? value : null;
             }
 
             // get the properties for this object type
@@ -516,26 +518,6 @@ namespace OpenXmlUtils
                 Width = width,
             };
             return column;
-        }
-
-        private static bool IsStringObjectDictionary(object obj)
-        {
-            var t = obj.GetType();
-            var isDict = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
-            if (!isDict)
-                return false;
-
-            var keyType = t.GetGenericArguments()[0];
-            var valueType = t.GetGenericArguments()[1];
-            return keyType == typeof (String) &&
-                   valueType == typeof (Object);
-        }
-
-        private static bool IsList(object obj)
-        {
-            var t = obj.GetType();
-            var isList = t.IsGenericType && t.GetGenericTypeDefinition() == typeof(List<>);
-            return isList;
         }
     }
 }
